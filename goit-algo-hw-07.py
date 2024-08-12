@@ -1,34 +1,53 @@
-# імпортуємо потрібні бібліотеки
-import networkx as nx
-import matplotlib.pyplot as plt
+class Node:
+    def __init__(self, key):
+        self.left = None
+        self.right = None
+        self.val = key
 
-# створюємо граф
-G = nx.Graph()
+# Завдання 1 - функція для пошуку максимального значення в дереві
+def find_max(node):
 
-# додаємо вершини та ребра в граф
-edges = [('A', 'B'), ('B', 'C'), ('C', 'D'), ('D', 'E'), ('E', 'F'), ('F', 'A')]
-G.add_edges_from(edges)
+    if node is None:
+        return None
 
-# візуалізуємо граф
-nx.draw(G, with_labels=True)
-plt.show()
+    # переходимо до крайнього правого вузла
+    while node.right is not None:
+        node = node.right
 
-# аналізуємо граф
-print(f"Кількість вершин: {G.number_of_nodes()}")
-print(f"Кількість ребер: {G.number_of_edges()}")
+    # повертаємо значення крайнього правого вузла
+    return node.val
 
-# використовуємо DFS для знаходження шляхів
-dfs_paths = list(nx.dfs_edges(G, source='A'))
-print(f"DFS шляхи: {dfs_paths}")
+# Завдання 2 - функція для пошуку мінімального значення в дереві
+def find_min(node):
 
-# використовуємо BFS для знаходження шляхів
-bfs_paths = list(nx.bfs_edges(G, source='A'))
-print(f"BFS шляхи: {bfs_paths}")
+    if node is None:
+        return None
 
-# додаємо ваги до ребер
-for edge in G.edges():
-    G[edge[0]][edge[1]]['weight'] = 1
+    # переходимо до крайнього лівого вузла
+    while node.left is not None:
+        node = node.left
 
-# використовуємо алгоритм Дейкстри для знаходження найкоротшого шляху
-for node in G.nodes():
-    print(f"Найкоротший шлях від A до {node}: {nx.dijkstra_path(G, 'A', node)}")
+    # повертаємо значення крайнього лівого вузла
+    return node.val
+
+# Завдання 3 - функція для пошуку суми всіх значень в дереві
+def find_sum(node):
+
+    if node is None:
+        return 0
+
+    # сума значення поточного вузла та суми значень лівого та правого піддерев
+    return node.val + find_sum(node.left) + find_sum(node.right)
+
+# створюємо дерево
+root = Node(20)
+root.left = Node(10)
+root.right = Node(30)
+root.left.left = Node(5)
+root.left.right = Node(15)
+root.right.left = Node(25)
+root.right.right = Node(35)
+
+print("Найбільше значення в дереві:", find_max(root))
+print("Найменше значення в дереві:", find_min(root))
+print("Сума всіх значень в дереві:", find_sum(root))
